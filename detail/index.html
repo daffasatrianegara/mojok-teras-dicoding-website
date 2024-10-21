@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Berita | Mojok Teras</title>
+    <link rel="stylesheet" href="../style/index.css" />
+  </head>
+  <body>
+    <header>
+      <div class="back-container-2" onclick="goBack()">
+        <p class="text-back">Kembali</p>
+      </div>
+      <div id="header-news-detail-container"></div>
+    </header>
+    <main>
+      <article id="news-main-article"></article>
+    </main>
+    <footer id="footer" class="footer">
+      <p class="footer-text">&copy; 2024 Mojok Teras. Semua Hak Dilindungi.</p>
+    </footer>
+    <script>
+      const goBack = () => {
+        window.history.back(-1);
+      };
+
+      const getQuery = () => {
+        const urlQuery = new URLSearchParams(window.location.search);
+        return urlQuery.get("id");
+      };
+
+      const headerNews = document.getElementById(
+        "header-news-detail-container"
+      );
+      const contentNews = document.getElementById("news-main-article");
+      const newsId = getQuery();
+
+      const getData = async () => {
+        let elementData;
+        try {
+          const response = await fetch("../news.json");
+          const newsData = await response.json();
+          const findNews = newsData.news.map((search) => {
+            if (search.id === newsId) {
+              elementData = search;
+            }
+          });
+
+          if (elementData) {
+            headerNews.innerHTML = `
+            <img class="img-detail-news" src="../public/img-news/${elementData.img_url}" alt="img_${elementData.title}" />
+            <p class="title-detail-news">${elementData.title}</p>
+            <p>${elementData.date}</p>
+            `;
+
+            contentNews.innerHTML = `
+            <div class="content-detail-news">
+                ${elementData.content}
+            </div>
+            `;
+          } else {
+            const footer = document.getElementById("footer");
+            footer.style.display = "none";
+          }
+        } catch (error) {
+          console.error("Error fetching the news data:", error);
+          const footer = document.getElementById("footer");
+          footer.style.display = "none";
+        }
+      };
+
+      getData();
+    </script>
+  </body>
+</html>

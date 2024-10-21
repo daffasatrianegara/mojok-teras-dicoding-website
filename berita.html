@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Berita | Mojok Teras</title>
+    <link rel="stylesheet" href="./style/index.css" />
+  </head>
+  <body>
+    <header>
+      <div class="back-container" onclick="redirLandingPage()">
+        <p class="text-back">Kembali</p>
+      </div>
+      <div class="news-head-content">
+        <p class="news-head-title">Data Berita</p>
+        <p class="news-head-title-2">Data Berita Mojok Teras</p>
+      </div>
+    </header>
+    <main class="news-main" id="news">
+      <!-- isi data berita disini -->
+    </main>
+    <footer class="footer">
+      <p class="footer-text">&copy; 2024 Mojok Teras. Semua Hak Dilindungi.</p>
+    </footer>
+    <script>
+      const redirLandingPage = () => {
+        return (window.location.href = "index.html");
+      };
+
+      const redirectDetailNews = (id) => {
+        return (window.location.href = `./detail/index.html?id=${id}`);
+      };
+
+      fetch("news.json")
+        .then((response) => response.json())
+        .then((data) => {
+          const newsArray = data.news;
+          if (Array.isArray(newsArray)) {
+            const newsContainer = document.getElementById("news");
+            newsArray.forEach((element) => {
+              const cardItems = document.createElement("div");
+              cardItems.className = "card-news-2";
+
+              cardItems.innerHTML = `
+              <div class="card-news-content">
+              <img class="card-img" src="./public/img-news/${element.img_url}" alt="img_${element.title}" />
+                <p class="card-title-2 text-ellipsis-title">${element.title}</p>
+                <p class="card-date">${element.date}</p>
+                <div class="card-content-2 text-ellipsis-content">${element.content}</div>
+                <button class="btn-blue-2" onclick="redirectDetailNews(${element.id})">Detail Berita</button>
+              </div>
+              `;
+
+              newsContainer.appendChild(cardItems);
+            });
+          } else {
+            console.error("Data yang diterima bukan array:", newsArray);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching the JSON file:", error);
+        });
+    </script>
+  </body>
+</html>
